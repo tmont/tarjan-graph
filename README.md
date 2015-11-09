@@ -82,3 +82,35 @@ i: j
 //retrieve descendants
 console.log(graph.getDescendants('a')); 
 //[ 'b', 'd', 'e', 'c' ]
+
+And of course, dat dot:
+
+```javascript
+console.log(graph.toDot());
+/*
+digraph {
+  subgraph cluster0 {
+    color=red;
+    b; e; c; d;
+  }
+  subgraph cluster1 {
+    color=red;
+    g; i; j; f; h;
+  }
+  b -> e
+  b -> d
+  c -> b
+  a -> c
+  a -> b
+  d -> e
+  e -> c
+  g -> i
+  g -> h
+  f -> g
+  f -> a
+  f -> c
+  h -> j
+  i -> j
+  j -> f
+}
+*/
