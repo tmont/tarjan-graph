@@ -18,12 +18,12 @@ function Graph() {
 }
 
 Graph.prototype = {
-	add: function(key, dependencies) {
+	add: function(key, descendants) {
 		var self = this;
 
-		dependencies = Array.isArray(dependencies) ? dependencies : [ dependencies ];
+		descendants = Array.isArray(descendants) ? descendants : [ descendants ];
 
-		var successors = dependencies.map(function(key) {
+		var successors = descendants.map(function(key) {
 			if (!self.vertices[key]) {
 				self.vertices[key] = new Vertex(key, []);
 			}
@@ -64,10 +64,6 @@ Graph.prototype = {
 	},
 
 	dfs: function(key, visitor) {
-		if (this.hasCycle()) {
-			throw new Error('Graph has a cycle');
-		}
-
 		this.reset();
 		var stack = [ this.vertices[key] ],
 			v;
@@ -86,8 +82,8 @@ Graph.prototype = {
 		}
 	},
 
-	getDependencies: function(key) {
-		var dependencies = [],
+	getDescendants: function(key) {
+		var descendants = [],
 			ignore = true;
 		this.dfs(key, function(v) {
 			if (ignore) {
@@ -95,13 +91,13 @@ Graph.prototype = {
 				ignore = false;
 				return;
 			}
-			dependencies.push(v.name);
+			descendants.push(v.name);
 		});
-		return dependencies;
+		return descendants;
 	},
 
 	hasCycle: function() {
-		return this.getCycles().length === 1;
+		return this.getCycles().length > 0;
 	},
 
 	getStronglyConnectedComponents: function() {

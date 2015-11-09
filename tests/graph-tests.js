@@ -19,7 +19,7 @@ describe('Graph', function() {
 		cycle[2].should.have.property('name', 'c');
 	});
 
-	it('should get dependencies', function() {
+	it('should get descendants', function() {
 		var graph = new Graph()
 			.add('a', ['b', 'c'])
 			.add('b', ['d', 'e'])
@@ -27,11 +27,11 @@ describe('Graph', function() {
 			.add('d', ['e']);
 
 		graph.hasCycle().should.equal(false);
-		graph.getDependencies('a').should.eql([ 'b', 'd', 'e', 'c' ]);
-		graph.getDependencies('b').should.eql([ 'd', 'e' ]);
-		graph.getDependencies('c').should.eql([ 'b', 'd', 'e' ]);
-		graph.getDependencies('d').should.eql([ 'e' ]);
-		graph.getDependencies('e').should.eql([ ]);
+		graph.getDescendants('a').should.eql([ 'b', 'd', 'e', 'c' ]);
+		graph.getDescendants('b').should.eql([ 'd', 'e' ]);
+		graph.getDescendants('c').should.eql([ 'b', 'd', 'e' ]);
+		graph.getDescendants('d').should.eql([ 'e' ]);
+		graph.getDescendants('e').should.eql([ ]);
 	});
 
 	it('should explode if adding a node that creates a cycle', function() {
@@ -103,6 +103,7 @@ describe('Graph', function() {
   j -> f\n\
 }\n';
 
+		graph.hasCycle().should.equal(true);
 		graph.toDot().should.equal(expected);
 	});
 });

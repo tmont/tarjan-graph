@@ -1,6 +1,6 @@
 {
 	"name": "tarjan-graph",
-	"version": "0.0.1",
+	"version": "0.1.0",
 
 	"scripts": {
 		"test": "node_modules/.bin/mocha -R spec tests"
