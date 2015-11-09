@@ -82,6 +82,7 @@ i: j
 //retrieve descendants
 console.log(graph.getDescendants('a')); 
 //[ 'b', 'd', 'e', 'c' ]
+```
 
 And of course, dat dot:
 
