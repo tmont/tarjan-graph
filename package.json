@@ -6,6 +6,8 @@
 		"test": "node_modules/.bin/mocha -R spec tests"
 	},
 
+	"files": [ "index.js" ],
+
 	"devDependencies": {
 		"mocha": "2.3.3",
 		"should": "7.1.1"
