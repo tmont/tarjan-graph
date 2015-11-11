@@ -133,7 +133,7 @@ Graph.prototype = {
 				do {
 					var w = stack.pop();
 					w.onStack = false;
-					scc.unshift(w);
+					scc.push(w);
 				} while (w !== v);
 
 				components.push(scc);
@@ -141,7 +141,9 @@ Graph.prototype = {
 		}
 
 		V.forEach(function(v) {
-			stronglyConnect(v);
+			if (v.index < 0) {
+				stronglyConnect(v);
+			}
 		});
 
 		return components;

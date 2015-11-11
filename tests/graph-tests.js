@@ -14,9 +14,29 @@ describe('Graph', function() {
 		cycles.should.have.length(1);
 		graph.hasCycle().should.equal(true);
 		var cycle = cycles[0];
-		cycle[0].should.have.property('name', 'b');
-		cycle[1].should.have.property('name', 'e');
-		cycle[2].should.have.property('name', 'c');
+		cycle[0].should.have.property('name', 'd');
+		cycle[1].should.have.property('name', 'c');
+		cycle[2].should.have.property('name', 'e');
+	});
+
+	it('should detect scc\'s properly', function() {
+		var graph = new Graph()
+				.add('a', ['b'])
+				.add('b', ['c', 'd'])
+				.add('c', ['a']);
+
+		var sccs = graph.getStronglyConnectedComponents();
+		sccs.should.have.length(2);
+		var justD = sccs[0],
+			cycle = sccs[1];
+
+		justD.should.have.length(1);
+		justD[0].should.have.property('name', 'd');
+
+		cycle.should.have.length(3);
+		cycle[0].should.have.property('name', 'a');
+		cycle[1].should.have.property('name', 'c');
+		cycle[2].should.have.property('name', 'b');
 	});
 
 	it('should get descendants', function() {
@@ -42,7 +62,7 @@ describe('Graph', function() {
 			graph.addAndVerify('b', 'a');
 		}
 
-		explode.should.throwError('Detected 1 cycle:\n  b -> a -> b');
+		explode.should.throwError('Detected 1 cycle:\n  a -> b -> a');
 	});
 
 	it('should convert acyclic graph to DOT', function() {
@@ -80,11 +100,11 @@ describe('Graph', function() {
 		var expected = 'digraph {\n\
   subgraph cluster0 {\n\
     color=red;\n\
-    b; e; c; d;\n\
+    d; c; e; b;\n\
   }\n\
   subgraph cluster1 {\n\
     color=red;\n\
-    g; i; j; f; h;\n\
+    h; f; j; i; g;\n\
   }\n\
   b -> e\n\
   b -> d\n\
