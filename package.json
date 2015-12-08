@@ -7,10 +7,15 @@
 		"test": "node_modules/.bin/mocha -R spec tests"
 	},
 
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tmont/tarjan-graph.git"
+	},
+
 	"files": [ "index.js" ],
 
 	"devDependencies": {
-		"mocha": "2.3.3",
+		"mocha": "2.3.4",
 		"should": "7.1.1"
 	}
 }
