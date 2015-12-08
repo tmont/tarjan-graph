@@ -155,6 +155,20 @@ Graph.prototype = {
 		});
 	},
 
+	clone: function() {
+		var graph = new Graph(),
+			self = this;
+
+		Object.keys(this.vertices).forEach(function(key) {
+			var v = self.vertices[key];
+			graph.add(v.name, v.successors.map(function(w) {
+				return w.name;
+			}));
+		});
+
+		return graph;
+	},
+
 	toDot: function() {
 		var V = this.vertices,
 		lines = [ 'digraph {' ];

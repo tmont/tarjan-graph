@@ -126,4 +126,36 @@ describe('Graph', function() {
 		graph.hasCycle().should.equal(true);
 		graph.toDot().should.equal(expected);
 	});
+
+	it('should clone graph', function() {
+		var graph = new Graph()
+			.add('a', [ 'b', 'c' ])
+			.add('b', [ 'd', 'e' ])
+			.add('c', 'b');
+
+		var otherGraph = graph.clone();
+
+
+		function arrayEquivalent(arr1, arr2) {
+			arr1.sort().should.eql(arr2.sort());
+		}
+
+		arrayEquivalent(Object.keys(otherGraph), Object.keys(graph));
+
+		Object.keys(otherGraph.vertices).forEach(function(key) {
+			graph.vertices.should.have.property(key);
+
+			//ensure there is no reference between the two graph instances
+			otherGraph.vertices[key].should.not.equal(graph.vertices[key]);
+
+			var w = graph.vertices[key].successors.map(function(w) {
+				return w.name;
+			});
+			var otherW = otherGraph.vertices[key].successors.map(function(w) {
+				return w.name;
+			});
+
+			arrayEquivalent(otherW, w);
+		});
+	});
 });
