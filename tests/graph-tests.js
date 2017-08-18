@@ -54,6 +54,33 @@ describe('Graph', function() {
 		graph.getDescendants('e').should.eql([ ]);
 	});
 
+	it('should filter descendants correctly', function() {
+	 	var filterFunc = (desc) => {
+	 		const invalidDescs = ['f', 'g']
+	 		let reject = false
+	 		for (let i = 0, len = invalidDescs.length ; i < len; i++) {
+	 			if (desc === invalidDescs[i]) {
+	 				reject = true
+	 				break
+	 			}
+	 		}
+	 		return !reject
+	 	}
+		var graph = new Graph()
+			.addAndFilterDescendants('a', ['b', 'c', 'f'], filterFunc)
+			.addAndFilterDescendants('b', ['d', 'e', 'g'], filterFunc)
+			.addAndFilterDescendants('c', ['b', 'f', 'g'], filterFunc)
+			.addAndFilterDescendants('d', ['e'], filterFunc)
+			.addAndFilterDescendants('e', ['f'], filterFunc)
+
+		graph.hasCycle().should.equal(false);
+		graph.getDescendants('a').should.eql([ 'c', 'b', 'e', 'd' ]);
+		graph.getDescendants('b').should.eql([ 'e', 'd' ]);
+		graph.getDescendants('c').should.eql([ 'b', 'e', 'd' ]);
+		graph.getDescendants('d').should.eql([ 'e' ]);
+		graph.getDescendants('e').should.eql([ ]);
+	});
+
 	it('should explode if adding a node that creates a cycle', function() {
 		var graph = new Graph()
 			.add('a', 'b');

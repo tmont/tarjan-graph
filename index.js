@@ -38,6 +38,29 @@ Graph.prototype = {
     return this;
   },
 
+  addAndFilterDescendants(key, descendants, filter) {
+    descendants = Array.isArray(descendants) ? descendants : [ descendants ]
+
+    const successors = descendants.reduce((fold, descendant) => {
+      if (filter && !filter(descendant)) {
+        return fold
+      }
+
+      if (!this.vertices[descendant]) {
+        this.vertices[descendant] = new Vertex(descendant, [])
+      }
+      fold.push(this.vertices[desc])
+      return fold
+    }, [])
+
+    if (!this.vertices[key]) {
+      this.vertices[key] = new Vertex(key)
+    }
+
+    this.vertices[key].successors = successors.concat([]).reverse()
+    return this
+  },
+
   reset: function() {
     var self = this;
     Object.keys(this.vertices).forEach(function(key) {
