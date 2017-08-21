@@ -1,198 +1,212 @@
 function Vertex(name, successors) {
-	this.name = name;
-	this.successors = successors;
-	this.reset();
+  this.name = name
+  this.successors = successors
+  this.reset()
 }
 
 Vertex.prototype = {
-	reset: function() {
-		this.index = -1;
-		this.lowLink = -1;
-		this.onStack = false;
-		this.visited = false;
-	}
-};
+  reset() {
+    this.index = -1
+    this.lowLink = -1
+    this.onStack = false
+    this.visited = false
+  }
+}
 
 function Graph() {
-	this.vertices = {};
+  this.vertices = {}
 }
 
 Graph.prototype = {
-	add: function(key, descendants) {
-		var self = this;
+  add(key, descendants) {
+    descendants = Array.isArray(descendants) ? descendants : [descendants]
 
-		descendants = Array.isArray(descendants) ? descendants : [ descendants ];
+    const successors = descendants.map((descendant) => {
+      if (!this.vertices[descendant]) {
+        this.vertices[descendant] = new Vertex(descendant, [])
+      }
+      return this.vertices[descendant]
+    })
 
-		var successors = descendants.map(function(key) {
-			if (!self.vertices[key]) {
-				self.vertices[key] = new Vertex(key, []);
-			}
-			return self.vertices[key];
-		});
+    if (!this.vertices[key]) {
+      this.vertices[key] = new Vertex(key)
+    }
 
-		if (!this.vertices[key]) {
-			this.vertices[key] = new Vertex(key);
-		}
+    this.vertices[key].successors = successors
+    return this
+  },
 
-		this.vertices[key].successors = successors.concat([]).reverse();
-		return this;
-	},
+  addAndFilterDescendants(key, descendants, filter) {
+    descendants = Array.isArray(descendants) ? descendants : [descendants]
 
-	reset: function() {
-		var self = this;
-		Object.keys(this.vertices).forEach(function(key) {
-			self.vertices[key].reset();
-		});
-	},
+    const successors = descendants.reduce((fold, descendant) => {
+      if (filter && !filter(descendant)) {
+        return fold
+      }
 
-	addAndVerify: function(key, dependencies) {
-		this.add(key, dependencies);
-		var cycles = this.getCycles();
-		if (cycles.length) {
-			var message = 'Detected ' + cycles.length + ' cycle' + (cycles.length === 1 ? '' : 's') + ':';
-			message += '\n' + cycles.map(function(scc) {
-				var names = scc.map(function(v) { return v.name; });
-				return '  ' + names.join(' -> ') + ' -> ' + names[0];
-			}).join('\n');
+      if (!this.vertices[descendant]) {
+        this.vertices[descendant] = new Vertex(descendant, [])
+      }
+      fold.push(this.vertices[descendant])
+      return fold
+    }, [])
 
-			var err = new Error(message);
-			err.cycles = cycles;
-			throw err;
-		}
+    if (!this.vertices[key]) {
+      this.vertices[key] = new Vertex(key)
+    }
 
-		return this;
-	},
+    this.vertices[key].successors = successors
+    return this
+  },
 
-	dfs: function(key, visitor) {
-		this.reset();
-		var stack = [ this.vertices[key] ],
-			v;
-		while (v = stack.pop()) {
-			if (v.visited) {
-				continue;
-			}
+  reset() {
+    Object.keys(this.vertices).forEach((key) => {
+      this.vertices[key].reset()
+    })
+  },
 
-			//pre-order traversal
-			visitor(v);
-			v.visited = true;
+  addAndVerify(key, dependencies) {
+    this.add(key, dependencies)
+    const cycles = this.getCycles()
+    if (cycles.length) {
+      let message = 'Detected ' + cycles.length + ' cycle' + (cycles.length === 1 ? '' : 's') + ':'
+      message += '\n' + cycles.map((scc) => {
+        const names = scc.map((v) => v.name)
+        return '  ' + names.join(' -> ') + ' -> ' + names[0]
+      }).join('\n')
 
-			v.successors.forEach(function(w) {
-				stack.push(w);
-			});
-		}
-	},
+      const err = new Error(message)
+      err.cycles = cycles
+      throw err
+    }
 
-	getDescendants: function(key) {
-		var descendants = [],
-			ignore = true;
-		this.dfs(key, function(v) {
-			if (ignore) {
-				//ignore the first node
-				ignore = false;
-				return;
-			}
-			descendants.push(v.name);
-		});
-		return descendants;
-	},
+    return this
+  },
 
-	hasCycle: function() {
-		return this.getCycles().length > 0;
-	},
+  dfs(key, visitor) {
+    this.reset()
+    const stack = [this.vertices[key]]
+    let v
+    while (v = stack.pop()) {
+      if (v.visited) {
+        continue
+      }
 
-	getStronglyConnectedComponents: function() {
-		var self = this;
+      // pre-order traversal
+      visitor(v)
+      v.visited = true
 
-		var V = Object.keys(self.vertices).map(function(key) {
-			self.vertices[key].reset();
-			return self.vertices[key];
-		});
+      v.successors.forEach((w) => {
+        stack.push(w)
+      })
+    }
+  },
 
-		var index = 0,
-			stack = [],
-			components = [];
+  getDescendants(key) {
+    const descendants = []
+    let ignore = true
+    this.dfs(key, (v) => {
+      if (ignore) {
+        // ignore the first node
+        ignore = false
+        return
+      }
+      descendants.push(v.name)
+    })
+    return descendants
+  },
 
-		function stronglyConnect(v) {
-			v.index = index;
-			v.lowLink = index;
-			index++;
-			stack.push(v);
-			v.onStack = true;
+  hasCycle() {
+    return this.getCycles().length > 0
+  },
 
-			v.successors.forEach(function(w) {
-				if (w.index < 0) {
-					stronglyConnect(w);
-					v.lowLink = Math.min(v.lowLink, w.lowLink);
-				} else if (w.onStack) {
-					v.lowLink = Math.min(v.lowLink, w.index);
-				}
-			});
+  getStronglyConnectedComponents() {
+    const V = Object.keys(this.vertices).map((key) => {
+      this.vertices[key].reset()
+      return this.vertices[key]
+    })
 
-			if (v.lowLink === v.index) {
-				var scc = [];
-				do {
-					var w = stack.pop();
-					w.onStack = false;
-					scc.push(w);
-				} while (w !== v);
+    let index = 0
+    const stack = []
+    const components = []
 
-				components.push(scc);
-			}
-		}
+    function stronglyConnect(v) {
+      v.index = index
+      v.lowLink = index
+      index++
+      stack.push(v)
+      v.onStack = true
 
-		V.forEach(function(v) {
-			if (v.index < 0) {
-				stronglyConnect(v);
-			}
-		});
+      v.successors.forEach((w) => {
+        if (w.index < 0) {
+          stronglyConnect(w)
+          v.lowLink = Math.min(v.lowLink, w.lowLink)
+        } else if (w.onStack) {
+          v.lowLink = Math.min(v.lowLink, w.index)
+        }
+      })
 
-		return components;
-	},
+      if (v.lowLink === v.index) {
+        const scc = []
+        let w
+        do {
+          w = stack.pop()
+          w.onStack = false
+          scc.push(w)
+        } while (w !== v)
 
-	getCycles: function() {
-		return this.getStronglyConnectedComponents().filter(function(scc) {
-			return scc.length > 1;
-		});
-	},
+        components.push(scc)
+      }
+    }
 
-	clone: function() {
-		var graph = new Graph(),
-			self = this;
+    V.forEach((v) => {
+      if (v.index < 0) {
+        stronglyConnect(v)
+      }
+    })
 
-		Object.keys(this.vertices).forEach(function(key) {
-			var v = self.vertices[key];
-			graph.add(v.name, v.successors.map(function(w) {
-				return w.name;
-			}));
-		});
+    return components
+  },
 
-		return graph;
-	},
+  getCycles() {
+    return this.getStronglyConnectedComponents().filter((scc) => scc.length > 1)
+  },
 
-	toDot: function() {
-		var V = this.vertices,
-		lines = [ 'digraph {' ];
+  clone() {
+    const graph = new Graph()
 
-		var cycles = this.getCycles();
-		cycles.forEach(function(scc, i) {
-			lines.push('  subgraph cluster' + i + ' {');
-			lines.push('    color=red;');
-			lines.push('    ' + scc.map(function(v) { return v.name; }).join('; ') + ';');
-			lines.push('  }');
-		});
+    Object.keys(this.vertices).forEach((key) => {
+      const v = this.vertices[key]
+      graph.add(v.name, v.successors.map((w) => w.name))
+    })
 
-		Object.keys(V).forEach(function(key) {
-			var v = V[key];
-			if (v.successors.length) {
-				v.successors.forEach(function(w) {
-					lines.push('  ' + v.name + ' -> ' + w.name);
-				});
-			}
-		});
+    return graph
+  },
 
-		lines.push('}');
-		return lines.join('\n') + '\n';
-	}
-};
+  toDot() {
+    const V = this.vertices
+    const lines = ['digraph {']
 
-module.exports = Graph;
+    const cycles = this.getCycles()
+    cycles.forEach((scc, i) => {
+      lines.push('  subgraph cluster' + i + ' {')
+      lines.push('    color=red;')
+      lines.push('    ' + scc.map((v) => v.name).join('; ') + ';')
+      lines.push('  }')
+    })
+
+    Object.keys(V).forEach((key) => {
+      const v = V[key]
+      if (v.successors.length) {
+        v.successors.forEach((w) => {
+          lines.push('  ' + v.name + ' -> ' + w.name)
+        })
+      }
+    })
+
+    lines.push('}')
+    return lines.join('\n') + '\n'
+  }
+}
+
+module.exports = Graph
