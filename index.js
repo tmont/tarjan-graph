@@ -32,7 +32,7 @@ Graph.prototype = {
       this.vertices[key] = new Vertex(key)
     }
 
-    this.vertices[key].successors = successors.concat([]).reverse()
+    this.vertices[key].successors = successors
     return this
   },
 
@@ -55,7 +55,7 @@ Graph.prototype = {
       this.vertices[key] = new Vertex(key)
     }
 
-    this.vertices[key].successors = successors.concat([]).reverse()
+    this.vertices[key].successors = successors
     return this
   },
 

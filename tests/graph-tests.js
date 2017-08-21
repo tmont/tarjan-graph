@@ -14,9 +14,9 @@ describe('Graph', function() {
 		cycles.should.have.length(1);
 		graph.hasCycle().should.equal(true);
 		var cycle = cycles[0];
-		cycle[0].should.have.property('name', 'd');
-		cycle[1].should.have.property('name', 'c');
-		cycle[2].should.have.property('name', 'e');
+		cycle[0].should.have.property('name', 'c');
+		cycle[1].should.have.property('name', 'e');
+		cycle[2].should.have.property('name', 'd');
 	});
 
 	it('should detect scc\'s properly', function() {
@@ -47,9 +47,9 @@ describe('Graph', function() {
 			.add('d', ['e']);
 
 		graph.hasCycle().should.equal(false);
-		graph.getDescendants('a').should.eql([ 'b', 'd', 'e', 'c' ]);
-		graph.getDescendants('b').should.eql([ 'd', 'e' ]);
-		graph.getDescendants('c').should.eql([ 'b', 'd', 'e' ]);
+		graph.getDescendants('a').should.eql([ 'c', 'b', 'e', 'd' ]);
+		graph.getDescendants('b').should.eql([ 'e', 'd' ]);
+		graph.getDescendants('c').should.eql([ 'b', 'e', 'd' ]);
 		graph.getDescendants('d').should.eql([ 'e' ]);
 		graph.getDescendants('e').should.eql([ ]);
 	});
@@ -100,11 +100,11 @@ describe('Graph', function() {
 			.add('d', ['e']);
 
 		var expected = 'digraph {\n\
-  b -> e\n\
   b -> d\n\
+  b -> e\n\
   c -> b\n\
-  a -> c\n\
   a -> b\n\
+  a -> c\n\
   d -> e\n\
 }\n';
 
@@ -127,24 +127,24 @@ describe('Graph', function() {
 		var expected = 'digraph {\n\
   subgraph cluster0 {\n\
     color=red;\n\
-    d; c; e; b;\n\
+    c; e; d; b;\n\
   }\n\
   subgraph cluster1 {\n\
     color=red;\n\
-    h; f; j; i; g;\n\
+    i; f; j; h; g;\n\
   }\n\
-  b -> e\n\
   b -> d\n\
+  b -> e\n\
   c -> b\n\
-  a -> c\n\
   a -> b\n\
+  a -> c\n\
   d -> e\n\
   e -> c\n\
-  g -> i\n\
   g -> h\n\
-  f -> g\n\
-  f -> a\n\
+  g -> i\n\
   f -> c\n\
+  f -> a\n\
+  f -> g\n\
   h -> j\n\
   i -> j\n\
   j -> f\n\
