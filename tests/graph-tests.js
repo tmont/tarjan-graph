@@ -1,34 +1,34 @@
-var should = require('should'),
-	Graph = require('../');
+const should = require('should');
+const Graph = require('../');
 
-describe('Graph', function() {
-	it('should detect cycle', function() {
-		var graph = new Graph()
+describe('Graph', () => {
+	it('should detect cycle', () => {
+		const graph = new Graph()
 			.add('a', [ 'b', 'c' ])
 			.add('b', [ 'd', 'e' ])
 			.add('c', [ 'b' ])
 			.add('d', [ 'e' ])
 			.add('e', [ 'c' ]);
 
-		var cycles = graph.getCycles();
+		const cycles = graph.getCycles();
 		cycles.should.have.length(1);
 		graph.hasCycle().should.equal(true);
-		var cycle = cycles[0];
+		const cycle = cycles[0];
 		cycle[0].should.have.property('name', 'd');
 		cycle[1].should.have.property('name', 'c');
 		cycle[2].should.have.property('name', 'e');
 	});
 
-	it('should detect scc\'s properly', function() {
-		var graph = new Graph()
+	it('should detect scc\'s properly', () => {
+		const graph = new Graph()
 				.add('a', ['b'])
 				.add('b', ['c', 'd'])
 				.add('c', ['a']);
 
-		var sccs = graph.getStronglyConnectedComponents();
+		const sccs = graph.getStronglyConnectedComponents();
 		sccs.should.have.length(2);
-		var justD = sccs[0],
-			cycle = sccs[1];
+		const justD = sccs[0];
+		const cycle = sccs[1];
 
 		justD.should.have.length(1);
 		justD[0].should.have.property('name', 'd');
@@ -39,8 +39,8 @@ describe('Graph', function() {
 		cycle[2].should.have.property('name', 'b');
 	});
 
-	it('should get descendants', function() {
-		var graph = new Graph()
+	it('should get descendants', () => {
+		const graph = new Graph()
 			.add('a', ['b', 'c'])
 			.add('b', ['d', 'e'])
 			.add('c', ['b'])
@@ -54,8 +54,8 @@ describe('Graph', function() {
 		graph.getDescendants('e').should.eql([ ]);
 	});
 
-	it('should explode if adding a node that creates a cycle', function() {
-		var graph = new Graph()
+	it('should explode if adding a node that creates a cycle', () => {
+		const graph = new Graph()
 			.add('a', 'b');
 
 		function explode() {
@@ -65,14 +65,14 @@ describe('Graph', function() {
 		explode.should.throwError('Detected 1 cycle:\n  a -> b -> a');
 	});
 
-	it('should convert acyclic graph to DOT', function() {
-		var graph = new Graph()
+	it('should convert acyclic graph to DOT', () => {
+		const graph = new Graph()
 			.add('a', ['b', 'c'])
 			.add('b', ['d', 'e'])
 			.add('c', ['b'])
 			.add('d', ['e']);
 
-		var expected = 'digraph {\n\
+		const expected = 'digraph {\n\
   b -> e\n\
   b -> d\n\
   c -> b\n\
@@ -84,8 +84,8 @@ describe('Graph', function() {
 		graph.toDot().should.equal(expected);
 	});
 
-	it('should convert cyclic graph to DOT showing SCCs', function() {
-		var graph = new Graph()
+	it('should convert cyclic graph to DOT showing SCCs', () => {
+		const graph = new Graph()
 			.add('a', ['b', 'c'])
 			.add('b', ['d', 'e'])
 			.add('c', ['b'])
@@ -97,7 +97,7 @@ describe('Graph', function() {
 			.add('i', ['j'])
 			.add('j', ['f']);
 
-		var expected = 'digraph {\n\
+		const expected = 'digraph {\n\
   subgraph cluster0 {\n\
     color=red;\n\
     d; c; e; b;\n\
@@ -127,13 +127,13 @@ describe('Graph', function() {
 		graph.toDot().should.equal(expected);
 	});
 
-	it('should clone graph', function() {
-		var graph = new Graph()
+	it('should clone graph', () => {
+		const graph = new Graph()
 			.add('a', [ 'b', 'c' ])
 			.add('b', [ 'd', 'e' ])
 			.add('c', 'b');
 
-		var otherGraph = graph.clone();
+		const otherGraph = graph.clone();
 
 
 		function arrayEquivalent(arr1, arr2) {
@@ -142,18 +142,14 @@ describe('Graph', function() {
 
 		arrayEquivalent(Object.keys(otherGraph), Object.keys(graph));
 
-		Object.keys(otherGraph.vertices).forEach(function(key) {
+		Object.keys(otherGraph.vertices).forEach((key) => {
 			graph.vertices.should.have.property(key);
 
 			//ensure there is no reference between the two graph instances
 			otherGraph.vertices[key].should.not.equal(graph.vertices[key]);
 
-			var w = graph.vertices[key].successors.map(function(w) {
-				return w.name;
-			});
-			var otherW = otherGraph.vertices[key].successors.map(function(w) {
-				return w.name;
-			});
+			const w = graph.vertices[key].successors.map(w => w.name);
+			const otherW = otherGraph.vertices[key].successors.map(w => w.name);
 
 			arrayEquivalent(otherW, w);
 		});

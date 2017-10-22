@@ -1,33 +1,32 @@
-function Vertex(name, successors) {
-	this.name = name;
-	this.successors = successors;
-	this.reset();
-}
+class Vertex {
+	constructor(name, successors) {
+		this.name = name;
+		this.successors = successors;
+		this.reset();
+	}
 
-Vertex.prototype = {
-	reset: function() {
+	reset() {
 		this.index = -1;
 		this.lowLink = -1;
 		this.onStack = false;
 		this.visited = false;
 	}
-};
-
-function Graph() {
-	this.vertices = {};
 }
 
-Graph.prototype = {
-	add: function(key, descendants) {
-		var self = this;
 
-		descendants = Array.isArray(descendants) ? descendants : [ descendants ];
+class Graph {
+	constructor() {
+		this.vertices = {};
+	}
 
-		var successors = descendants.map(function(key) {
-			if (!self.vertices[key]) {
-				self.vertices[key] = new Vertex(key, []);
+	add(key, descendants) {
+		descendants = Array.isArray(descendants) ? descendants : [descendants];
+
+		const successors = descendants.map((key) => {
+			if (!this.vertices[key]) {
+				this.vertices[key] = new Vertex(key, []);
 			}
-			return self.vertices[key];
+			return this.vertices[key];
 		});
 
 		if (!this.vertices[key]) {
@@ -36,37 +35,36 @@ Graph.prototype = {
 
 		this.vertices[key].successors = successors.concat([]).reverse();
 		return this;
-	},
+	}
 
-	reset: function() {
-		var self = this;
-		Object.keys(this.vertices).forEach(function(key) {
-			self.vertices[key].reset();
+	reset() {
+		Object.keys(this.vertices).forEach((key) => {
+			this.vertices[key].reset();
 		});
-	},
+	}
 
-	addAndVerify: function(key, dependencies) {
+	addAndVerify(key, dependencies) {
 		this.add(key, dependencies);
-		var cycles = this.getCycles();
+		const cycles = this.getCycles();
 		if (cycles.length) {
-			var message = 'Detected ' + cycles.length + ' cycle' + (cycles.length === 1 ? '' : 's') + ':';
-			message += '\n' + cycles.map(function(scc) {
-				var names = scc.map(function(v) { return v.name; });
-				return '  ' + names.join(' -> ') + ' -> ' + names[0];
+			let message = `Detected ${cycles.length} cycle${cycles.length === 1 ? '' : 's'}:`;
+			message += '\n' + cycles.map((scc) => {
+				const names = scc.map(v => v.name);
+				return `  ${names.join(' -> ')} -> ${names[0]}`;
 			}).join('\n');
 
-			var err = new Error(message);
+			const err = new Error(message);
 			err.cycles = cycles;
 			throw err;
 		}
 
 		return this;
-	},
+	}
 
-	dfs: function(key, visitor) {
+	dfs(key, visitor) {
 		this.reset();
-		var stack = [ this.vertices[key] ],
-			v;
+		const stack = [this.vertices[key]];
+		let v;
 		while (v = stack.pop()) {
 			if (v.visited) {
 				continue;
@@ -76,16 +74,14 @@ Graph.prototype = {
 			visitor(v);
 			v.visited = true;
 
-			v.successors.forEach(function(w) {
-				stack.push(w);
-			});
+			v.successors.forEach(w => stack.push(w));
 		}
-	},
+	}
 
-	getDescendants: function(key) {
-		var descendants = [],
-			ignore = true;
-		this.dfs(key, function(v) {
+	getDescendants(key) {
+		const descendants = [];
+		let ignore = true;
+		this.dfs(key, (v) => {
 			if (ignore) {
 				//ignore the first node
 				ignore = false;
@@ -93,33 +89,32 @@ Graph.prototype = {
 			}
 			descendants.push(v.name);
 		});
+
 		return descendants;
-	},
+	}
 
-	hasCycle: function() {
+	hasCycle() {
 		return this.getCycles().length > 0;
-	},
+	}
 
-	getStronglyConnectedComponents: function() {
-		var self = this;
-
-		var V = Object.keys(self.vertices).map(function(key) {
-			self.vertices[key].reset();
-			return self.vertices[key];
+	getStronglyConnectedComponents() {
+		const V = Object.keys(this.vertices).map((key) => {
+			this.vertices[key].reset();
+			return this.vertices[key];
 		});
 
-		var index = 0,
-			stack = [],
-			components = [];
+		let index = 0;
+		const stack = [];
+		const components = [];
 
-		function stronglyConnect(v) {
+		const stronglyConnect = (v) => {
 			v.index = index;
 			v.lowLink = index;
 			index++;
 			stack.push(v);
 			v.onStack = true;
 
-			v.successors.forEach(function(w) {
+			v.successors.forEach((w) => {
 				if (w.index < 0) {
 					stronglyConnect(w);
 					v.lowLink = Math.min(v.lowLink, w.lowLink);
@@ -129,16 +124,17 @@ Graph.prototype = {
 			});
 
 			if (v.lowLink === v.index) {
-				var scc = [];
+				const scc = [];
+				let w;
 				do {
-					var w = stack.pop();
+					w = stack.pop();
 					w.onStack = false;
 					scc.push(w);
 				} while (w !== v);
 
 				components.push(scc);
 			}
-		}
+		};
 
 		V.forEach(function(v) {
 			if (v.index < 0) {
@@ -147,45 +143,41 @@ Graph.prototype = {
 		});
 
 		return components;
-	},
+	}
 
-	getCycles: function() {
-		return this.getStronglyConnectedComponents().filter(function(scc) {
-			return scc.length > 1;
-		});
-	},
+	getCycles() {
+		return this.getStronglyConnectedComponents().filter(scc => scc.length > 1);
+	}
 
-	clone: function() {
-		var graph = new Graph(),
-			self = this;
+	clone() {
+		const graph = new Graph();
 
-		Object.keys(this.vertices).forEach(function(key) {
-			var v = self.vertices[key];
-			graph.add(v.name, v.successors.map(function(w) {
+		Object.keys(this.vertices).forEach((key) => {
+			const v = this.vertices[key];
+			graph.add(v.name, v.successors.map((w) => {
 				return w.name;
 			}));
 		});
 
 		return graph;
-	},
+	}
 
-	toDot: function() {
-		var V = this.vertices,
-		lines = [ 'digraph {' ];
+	toDot() {
+		const V = this.vertices;
+		const lines = [ 'digraph {' ];
 
-		var cycles = this.getCycles();
-		cycles.forEach(function(scc, i) {
+		this.getCycles().forEach((scc, i) => {
 			lines.push('  subgraph cluster' + i + ' {');
 			lines.push('    color=red;');
-			lines.push('    ' + scc.map(function(v) { return v.name; }).join('; ') + ';');
+			lines.push('    ' + scc.map(v => v.name).join('; ') + ';');
 			lines.push('  }');
 		});
 
-		Object.keys(V).forEach(function(key) {
-			var v = V[key];
+		Object.keys(V).forEach((key) => {
+			const v = V[key];
 			if (v.successors.length) {
-				v.successors.forEach(function(w) {
-					lines.push('  ' + v.name + ' -> ' + w.name);
+				v.successors.forEach((w) => {
+					lines.push(`  ${v.name} -> ${w.name}`);
 				});
 			}
 		});
@@ -193,6 +185,6 @@ Graph.prototype = {
 		lines.push('}');
 		return lines.join('\n') + '\n';
 	}
-};
+}
 
 module.exports = Graph;

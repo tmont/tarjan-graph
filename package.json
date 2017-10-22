@@ -2,20 +2,18 @@
 	"name": "tarjan-graph",
 	"version": "0.3.0",
 	"license": "MIT",
-
 	"scripts": {
 		"test": "node_modules/.bin/mocha -R spec tests"
 	},
-
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tmont/tarjan-graph.git"
 	},
-
-	"files": [ "index.js" ],
-
+	"files": [
+		"index.js"
+	],
 	"devDependencies": {
-		"mocha": "2.3.4",
-		"should": "7.1.1"
+		"mocha": "4.0.1",
+		"should": "13.1.2"
 	}
 }

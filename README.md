@@ -11,6 +11,8 @@ This library also has some very basic [Graphviz](http://www.graphviz.org/) suppo
 for visualizing graphs using the [DOT language](http://www.graphviz.org/doc/info/lang.html).
 
 ## Installation
+Note: as of v1.0.0 this library requires node >= v8.0.0.
+Use v0.3.0 for node < v8.0.0. 
 ```
 npm install tarjan-graph
 ```
@@ -22,9 +24,9 @@ Here's how you would generate the following graph (red boxes indicate a cycle):
 ![Dat Graph](./docs/two-cycles.png)
 
 ```javascript
-var Graph = require('tarjan-graph');
+const Graph = require('tarjan-graph');
 
-var graph = new Graph()
+const graph = new Graph()
   .add('a', ['b', 'c'])
   .add('b', ['d', 'e'])
   .add('c', ['b'])
@@ -63,8 +65,8 @@ Searching:
 
 ```javascript
 //depth-first search (pre-order)
-graph.dfs('g', function(v) {
-  console.log(v.name + ': ' + v.successors.map(function(w) { return w.name; }).join(', '));
+graph.dfs('g', (v) => {
+  console.log(v.name + ': ' + v.successors.map(w => w.name).join(', '));
 });
 /*
 g: i, h
