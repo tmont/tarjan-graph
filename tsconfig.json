@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true,
+		"strict": true,
+		"noEmit": true,
+		"target": "es6"
+	},
+	"files": [
+		"tests/ts/test.ts",
+		"index.d.ts"
+	]
+}

@@ -43,8 +43,8 @@ class Graph {
 		});
 	}
 
-	addAndVerify(key, dependencies) {
-		this.add(key, dependencies);
+	addAndVerify(key, descendants) {
+		this.add(key, descendants);
 		const cycles = this.getCycles();
 		if (cycles.length) {
 			let message = `Detected ${cycles.length} cycle${cycles.length === 1 ? '' : 's'}:`;

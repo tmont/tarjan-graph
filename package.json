@@ -10,10 +10,13 @@
 		"url": "https://github.com/tmont/tarjan-graph.git"
 	},
 	"files": [
-		"index.js"
+		"index.js",
+		"index.d.ts"
 	],
 	"devDependencies": {
 		"mocha": "4.0.1",
-		"should": "13.1.2"
-	}
+		"should": "13.1.2",
+		"typescript": "2.5.3"
+	},
+	"types": "./index.d.ts"
 }
