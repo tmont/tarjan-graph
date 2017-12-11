@@ -9,7 +9,7 @@ interface Vertex {
 }
 
 declare class Graph {
-	vertices: { [key: string]: Vertex[] };
+	vertices: { [key: string]: Vertex };
 	add(key: string, descendants: string[] | string): Graph;
 	reset(): void;
 	addAndVerify(key: string, descendants: string[] | string): Graph;
