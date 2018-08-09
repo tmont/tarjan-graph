@@ -39,6 +39,18 @@ describe('Graph', () => {
 		cycle[2].should.have.property('name', 'b');
 	});
 
+	it('should detect cycle of length 1', () => {
+		const graph = new Graph()
+			.add('a', ['b'])
+			.add('a', ['c'])
+			.add('a', ['a']);
+
+		const cycles = graph.getCycles();
+		cycles.should.have.length(1);
+		const cycle = cycles[0];
+		cycle[0].should.have.property('name', 'a');
+	});
+
 	it('should get descendants', () => {
 		const graph = new Graph()
 			.add('a', ['b', 'c'])
@@ -85,6 +97,7 @@ describe('Graph', () => {
 	});
 
 	it('should convert cyclic graph to DOT showing SCCs', () => {
+		// graph from the README
 		const graph = new Graph()
 			.add('a', ['b', 'c'])
 			.add('b', ['d', 'e'])
@@ -95,7 +108,8 @@ describe('Graph', () => {
 			.add('g', ['h', 'i'])
 			.add('h', ['j'])
 			.add('i', ['j'])
-			.add('j', ['f']);
+			.add('j', ['f', 'k'])
+			.add('k', ['k']);
 
 		const expected = 'digraph {\n\
   subgraph cluster0 {\n\
@@ -103,6 +117,10 @@ describe('Graph', () => {
     d; c; e; b;\n\
   }\n\
   subgraph cluster1 {\n\
+    color=red;\n\
+    k;\n\
+  }\n\
+  subgraph cluster2 {\n\
     color=red;\n\
     h; f; j; i; g;\n\
   }\n\
@@ -120,7 +138,9 @@ describe('Graph', () => {
   f -> c\n\
   h -> j\n\
   i -> j\n\
+  j -> k\n\
   j -> f\n\
+  k -> k\n\
 }\n';
 
 		graph.hasCycle().should.equal(true);

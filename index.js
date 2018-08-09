@@ -146,7 +146,14 @@ class Graph {
 	}
 
 	getCycles() {
-		return this.getStronglyConnectedComponents().filter(scc => scc.length > 1);
+		return this.getStronglyConnectedComponents().filter((scc) => {
+			if (scc.length > 1) {
+				return true;
+			}
+
+			const startNode = scc[0];
+			return startNode && startNode.successors.some(node => node === startNode);
+		});
 	}
 
 	clone() {

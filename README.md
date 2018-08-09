@@ -20,11 +20,10 @@ npm install tarjan-graph
 
 ## Usage
 
-Here's how you would generate the following graph (red boxes indicate a cycle):
+All examples use the following graph:
 
-![Dat Graph](./docs/two-cycles.png)
-
-```javascript
+```bash
+node -e "
 const Graph = require('tarjan-graph');
 
 const graph = new Graph()
@@ -37,8 +36,13 @@ const graph = new Graph()
   .add('g', ['h', 'i'])
   .add('h', ['j'])
   .add('i', ['j'])
-  .add('j', ['f']);
+  .add('j', ['f', 'k'])
+  .add('k', ['k']);
+
+console.log(graph.toDot());
+" | dot -o docs/example-graph.png -Tpng
 ```
+![Dat Graph](./docs/example-graph.png)
 
 Doing stuff with cycles:
 
@@ -58,7 +62,7 @@ console.log(graph.getCycles());
 Doing stuff with SCCs:
 
 ```javascript
-//same as graph.getCycles() except includes "cycles" of length 1
+//same as graph.getCycles() except includes single vertices
 console.log(graph.getStronglyConnectedComponents());
 ```
 
@@ -95,11 +99,15 @@ console.log(graph.toDot());
 digraph {
   subgraph cluster0 {
     color=red;
-    b; e; c; d;
+    d; c; e; b;
   }
   subgraph cluster1 {
     color=red;
-    g; i; j; f; h;
+    k;
+  }
+  subgraph cluster2 {
+    color=red;
+    h; f; j; i; g;
   }
   b -> e
   b -> d
@@ -115,7 +123,9 @@ digraph {
   f -> c
   h -> j
   i -> j
+  j -> k
   j -> f
+  k -> k
 }
 */
 ```
