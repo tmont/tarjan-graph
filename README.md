@@ -76,18 +76,19 @@ graph.dfs('g', (v) => {
 /*
 g: i, h
 h: j
-j: f
+j: k, f
 f: g, a, c
 c: b
 b: e, d
 d: e
 e: c
 a: c, b
+k: k
 i: j
 */
 
 //retrieve descendants
-console.log(graph.getDescendants('a')); 
+console.log(graph.getDescendants('a'));
 //[ 'b', 'd', 'e', 'c' ]
 ```
 
