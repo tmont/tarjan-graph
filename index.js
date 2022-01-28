@@ -194,4 +194,4 @@ class Graph {
 	}
 }
 
-module.exports = Graph;
+module.exports = { Graph };
