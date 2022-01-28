@@ -1,5 +1,7 @@
 # tarjan-graph
 
+_Forked from [tmont/tarjan-grpah](https://travis-ci.org/tmont). If [https://github.com/tmont/tarjan-graph/pull/6](https://github.com/tmont/tarjan-graph/pull/6) has been merged, use that instead._
+
 [![Build Status](https://travis-ci.org/tmont/tarjan-graph.png)](https://travis-ci.org/tmont/tarjan-graph)
 [![NPM version](https://img.shields.io/npm/v/tarjan-graph.svg)](https://www.npmjs.com/package/tarjan-graph)
 

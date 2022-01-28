@@ -1,22 +1,32 @@
 {
-	"name": "tarjan-graph",
-	"version": "2.0.0",
-	"license": "MIT",
-	"scripts": {
-		"test": "node_modules/.bin/mocha -R spec tests"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/tmont/tarjan-graph.git"
-	},
-	"files": [
-		"index.js",
-		"index.d.ts"
-	],
-	"devDependencies": {
-		"mocha": "5.2.0",
-		"should": "13.2.3",
-		"typescript": "3.0.1"
-	},
-	"types": "./index.d.ts"
+  "name": "@mrkev/tarjan-graph",
+  "version": "2.0.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha -R spec tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrkev/tarjan-graph.git"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "devDependencies": {
+    "mocha": "5.2.0",
+    "should": "13.2.3",
+    "typescript": "3.0.1"
+  },
+  "types": "./index.d.ts",
+  "bugs": {
+    "url": "https://github.com/mrkev/tarjan-graph/issues"
+  },
+  "homepage": "https://github.com/mrkev/tarjan-graph#readme",
+  "description": "Forked from tmont/tarjan-graph",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  }
 }
