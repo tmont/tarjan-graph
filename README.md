@@ -1,8 +1,5 @@
 # tarjan-graph
 
-[![Build Status](https://travis-ci.org/tmont/tarjan-graph.png)](https://travis-ci.org/tmont/tarjan-graph)
-[![NPM version](https://img.shields.io/npm/v/tarjan-graph.svg)](https://www.npmjs.com/package/tarjan-graph)
-
 This is a simple directed graph lib, mostly just for checking if a
 directed graph contains a cycle. It uses 
 [Tarjan's algorithm](https://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm)
@@ -10,6 +7,8 @@ for checking if the graph contains a cycle.
 
 This library also has some very basic [Graphviz](http://www.graphviz.org/) support
 for visualizing graphs using the [DOT language](http://www.graphviz.org/doc/info/lang.html).
+
+[![NPM version](https://img.shields.io/npm/v/tarjan-graph.svg)](https://www.npmjs.com/package/tarjan-graph)
 
 ## Installation
 Install using `npm`:
