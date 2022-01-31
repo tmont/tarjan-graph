@@ -12,19 +12,43 @@ This library also has some very basic [Graphviz](http://www.graphviz.org/) suppo
 for visualizing graphs using the [DOT language](http://www.graphviz.org/doc/info/lang.html).
 
 ## Installation
-Note: as of v1.0.0 this library requires node >= v8.0.0.
-Use v0.3.0 for node < v8.0.0. 
+Install using `npm`:
+
 ```
 npm install tarjan-graph
 ```
 
+* Note: as of v1.0.0 this library requires node >= v8.0.0.
+  Use v0.3.0 for node < v8.0.0. 
+* Note: as of v3.0.0 this library was ported to TypeScript and the default
+  export changed to get with the times. So now instead of this:
+  ```typescript
+  const Graph = require('tarjan-graph');  // js
+  import Graph = require('tarjan-graph'); // ts
+  ```
+  you now do this:
+  ```typescript
+  const Graph = require('tarjan-graph').default; // js
+  import Graph from 'tarjan-graph';              // ts
+  ```
+
 ## Usage
+
+JavaScript:
+```javascript
+const Graph = require('tarjan-graph').default;
+```
+
+TypeScript:
+```typescript
+import Graph from 'tarjan-graph';
+```
 
 All examples use the following graph:
 
 ```bash
 node -e "
-const Graph = require('tarjan-graph');
+const Graph = require('tarjan-graph').default;
 
 const graph = new Graph()
   .add('a', ['b', 'c'])
@@ -40,7 +64,7 @@ const graph = new Graph()
   .add('k', ['k']);
 
 console.log(graph.toDot());
-" | dot -o docs/example-graph.png -Tpng
+" | dot -o docs/example-graph.png -Tpng`
 ```
 ![Dat Graph](./docs/example-graph.png)
 

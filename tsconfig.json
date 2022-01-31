@@ -1,14 +1,16 @@
 {
 	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"declaration": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
 		"strictNullChecks": true,
 		"strict": true,
-		"noEmit": true,
-		"target": "es6"
+		"target": "es2017",
+		"types": [ "node" ]
 	},
 	"files": [
-		"tests/ts/test.ts",
-		"index.d.ts"
+		"index.ts"
 	]
 }
